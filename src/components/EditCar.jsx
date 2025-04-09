@@ -1,3 +1,10 @@
+/**
+ * EditCar Component
+ * 
+ * Provides a dialog form for editing existing cars.
+ * Pre-populates form data with selected car properties,
+ * and handles updating the car via API when submitted.
+ */
 import React, { useState, useEffect } from "react";
 import {
     Dialog,
@@ -9,6 +16,7 @@ import {
 } from "@mui/material";
 
 function EditCar({ open, onClose, car, updateCar }) {
+    // State to track edited car data
     const [updatedCar, setUpdatedCar] = useState({
         brand: "",
         model: "",
@@ -18,7 +26,7 @@ function EditCar({ open, onClose, car, updateCar }) {
         price: ""
     });
 
-    // CSS to remove number input spinners
+    // CSS to remove number input spinners for a cleaner UI
     const numberInputStyle = {
         "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
             "-webkit-appearance": "none",
@@ -29,6 +37,7 @@ function EditCar({ open, onClose, car, updateCar }) {
         }
     };
 
+    // Initialize form with car data when opened or when car changes
     useEffect(() => {
         if (car) {
             console.log("Car data for editing:", car);
@@ -44,10 +53,18 @@ function EditCar({ open, onClose, car, updateCar }) {
         }
     }, [car]);
 
+    /**
+     * Updates form state when input values change
+     * @param {Event} e - Input change event
+     */
     const handleChange = (e) => {
         setUpdatedCar({ ...updatedCar, [e.target.name]: e.target.value });
     };
 
+    /**
+     * Submits updated car data to the API
+     * Calls the updateCar function passed from parent component
+     */
     const handleSave = () => {
         if (car && car._links && car._links.self) {
             updateCar(car._links.self.href, updatedCar);
@@ -55,6 +72,7 @@ function EditCar({ open, onClose, car, updateCar }) {
         onClose();
     };
 
+    // Return null if no car is selected to avoid errors
     if (!car) {
         return null;
     }

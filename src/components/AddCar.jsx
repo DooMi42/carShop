@@ -1,4 +1,9 @@
-// src/components/AddCar.jsx
+/**
+ * AddCar Component
+ * 
+ * Provides a dialog form for adding new cars to the system.
+ * Handles form state and submits data to the parent component.
+ */
 import React, { useState } from "react";
 import {
     Dialog,
@@ -10,6 +15,7 @@ import {
 } from "@mui/material";
 
 function AddCar({ open, onClose, addCar }) {
+    // Form state for new car data
     const [car, setCar] = useState({
         brand: "",
         model: "",
@@ -19,13 +25,21 @@ function AddCar({ open, onClose, addCar }) {
         price: ""
     });
 
+    /**
+     * Updates form state when input values change
+     * @param {Event} e - Input change event
+     */
     const handleChange = (e) => {
         setCar({ ...car, [e.target.name]: e.target.value });
     };
 
+    /**
+     * Submits form data and resets form
+     * Calls the addCar function passed from parent component
+     */
     const handleSave = () => {
         addCar(car);
-        // Tyhjennetään kentät ja suljetaan
+        // Reset form fields and close dialog
         setCar({
             brand: "",
             model: "",

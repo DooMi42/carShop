@@ -1,28 +1,40 @@
-// src/components/CarList.jsx
+/**
+ * CarList Component
+ * 
+ * Main component that handles all car-related operations:
+ * - Displays a data grid of all cars
+ * - Provides functionality to add, edit, and delete cars
+ * - Handles API calls for CRUD operations
+ * - Shows notifications for user actions
+ */
 import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
-
 import { Button, Snackbar } from "@mui/material";
 import AddCar from "./AddCar";
 import EditCar from "./EditCar";
 
 function CarList() {
-    const [cars, setCars] = useState([]);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMsg, setSnackbarMsg] = useState("");
+    // State management
+    const [cars, setCars] = useState([]); // Stores car data from API
+    const [snackbarOpen, setSnackbarOpen] = useState(false); // Controls notification visibility
+    const [snackbarMsg, setSnackbarMsg] = useState(""); // Notification message content
 
-    // Dialog-ohjaimet
-    const [openAdd, setOpenAdd] = useState(false);
-    const [openEdit, setOpenEdit] = useState(false);
-    const [carToEdit, setCarToEdit] = useState(null);
+    // Dialog control states
+    const [openAdd, setOpenAdd] = useState(false); // Controls Add Car dialog
+    const [openEdit, setOpenEdit] = useState(false); // Controls Edit Car dialog
+    const [carToEdit, setCarToEdit] = useState(null); // Stores car data for editing
 
+    // Load cars when component mounts
     useEffect(() => {
         getCars();
     }, []);
 
-    // Haetaan kaikki autot
+    /**
+     * Fetches all cars from the API
+     * Updates the cars state with fetched data
+     */
     const getCars = () => {
         fetch("https://car-rest-service-carshop.2.rahtiapp.fi/cars")
             .then(response => response.json())
@@ -30,10 +42,13 @@ function CarList() {
                 console.log("Fetched data:", data._embedded.cars);
                 setCars(data._embedded.cars);
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Error fetching cars:", err));
     };
 
-    // Lisätään uusi auto (POST)
+    /**
+     * Adds a new car to the database
+     * @param {Object} newCar - Car data object
+     */
     const addCar = (newCar) => {
         fetch("https://car-rest-service-carshop.2.rahtiapp.fi/cars", {
             method: "POST",
@@ -42,35 +57,44 @@ function CarList() {
         })
             .then(response => {
                 if (response.ok) {
-                    getCars();
-                    setSnackbarMsg("Car added");
+                    getCars(); // Refresh car list
+                    setSnackbarMsg("Car added successfully");
                     setSnackbarOpen(true);
                 } else {
                     alert("Error adding car");
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Error adding car:", err));
     };
 
-    // Poistetaan auto (DELETE)
+    /**
+     * Deletes a car from the database
+     * @param {string} url - API endpoint for specific car
+     */
     const deleteCar = (url) => {
+        // Confirmation before deletion
         if (!window.confirm("Are you sure you want to delete this car?")) {
             return;
         }
+
         fetch(url, { method: "DELETE" })
             .then(response => {
                 if (response.ok) {
-                    getCars();
-                    setSnackbarMsg("Car deleted");
+                    getCars(); // Refresh car list
+                    setSnackbarMsg("Car deleted successfully");
                     setSnackbarOpen(true);
                 } else {
                     alert("Error deleting car");
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Error deleting car:", err));
     };
 
-    // Muokataan autoa (PUT)
+    /**
+     * Updates an existing car in the database
+     * @param {string} url - API endpoint for specific car
+     * @param {Object} updatedCar - New car data
+     */
     const updateCar = (url, updatedCar) => {
         fetch(url, {
             method: "PUT",
@@ -79,54 +103,33 @@ function CarList() {
         })
             .then(response => {
                 if (response.ok) {
-                    getCars();
-                    setSnackbarMsg("Car updated");
+                    getCars(); // Refresh car list
+                    setSnackbarMsg("Car updated successfully");
                     setSnackbarOpen(true);
                 } else {
                     alert("Error updating car");
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Error updating car:", err));
     };
 
-    // Avaa EditCar-dialogi valitun auton datalla
+    /**
+     * Opens the edit dialog with selected car data
+     * @param {Object} carData - Car data to edit
+     */
     const editCar = (carData) => {
         setCarToEdit(carData);
         setOpenEdit(true);
     };
 
-    // Suljetaan snackbar
+    /**
+     * Closes the notification snackbar
+     */
     const handleCloseSnackbar = () => {
         setSnackbarOpen(false);
     };
 
-    // Edit button renderer
-    const EditButtonRenderer = (params) => {
-        return (
-            <Button
-                variant="contained"
-                onClick={() => editCar(params.data)}
-                style={{ marginRight: 5 }}
-            >
-                Edit
-            </Button>
-        );
-    };
-
-    // Delete button renderer
-    const DeleteButtonRenderer = (params) => {
-        return (
-            <Button
-                variant="contained"
-                color="error"
-                onClick={() => deleteCar(params.data._links.self.href)}
-            >
-                Delete
-            </Button>
-        );
-    };
-
-    // Sarakemääritykset - jokaisessa rivissä on Edit ja Delete
+    // Column definitions for AG Grid
     const columns = [
         { headerName: "Brand", field: "brand", sortable: true, filter: true },
         { headerName: "Model", field: "model", sortable: true, filter: true },
@@ -138,6 +141,7 @@ function CarList() {
             headerName: "Actions",
             width: 180,
             cellRenderer: (params) => {
+                // Custom renderer for action buttons
                 return (
                     <div>
                         <Button
@@ -165,6 +169,7 @@ function CarList() {
     return (
         <div style={{ backgroundColor: "#1e1e1e", minHeight: "100vh" }}>
             <div style={{ padding: 20 }}>
+                {/* Add car button */}
                 <Button
                     variant="contained"
                     onClick={() => setOpenAdd(true)}
@@ -173,7 +178,7 @@ function CarList() {
                     Add Car
                 </Button>
 
-                {/* Ag-Grid - vie lähes koko sivun */}
+                {/* AG Grid - displays car data */}
                 <div
                     className="ag-theme-material"
                     style={{
@@ -196,12 +201,14 @@ function CarList() {
                 </div>
             </div>
 
-            {/* Dialog-ikkunat */}
+            {/* Add Car dialog */}
             <AddCar
                 open={openAdd}
                 onClose={() => setOpenAdd(false)}
                 addCar={addCar}
             />
+
+            {/* Edit Car dialog */}
             <EditCar
                 open={openEdit}
                 onClose={() => setOpenEdit(false)}
@@ -209,7 +216,7 @@ function CarList() {
                 updateCar={updateCar}
             />
 
-            {/* Snackbar-notifikaatio */}
+            {/* Notification snackbar */}
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}

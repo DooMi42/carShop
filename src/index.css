@@ -1,11 +1,19 @@
+/**
+ * Global stylesheet for the Car Shop application
+ * 
+ * Contains dark theme styling, typography settings,
+ * button styling, and AG Grid customizations
+ */
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  color-scheme: dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #1e1e1e;
+  /* Darker background for entire site */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,7 +35,10 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  color: #000000;
+  color: rgba(255, 255, 255, 0.87);
+  /* Light text for dark theme */
+  background-color: #1e1e1e;
+  /* Consistent dark background */
 }
 
 h1 {
@@ -45,6 +56,8 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  color: rgba(255, 255, 255, 0.87);
+  /* Light text for dark buttons */
 }
 
 button:hover {
@@ -56,10 +69,71 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* AG Grid dark theme customization */
+.ag-theme-material {
+  /* Grid background and cell colors */
+  --ag-background-color: #1e1e1e;
+  --ag-header-background-color: #2a2a2a;
+  --ag-odd-row-background-color: #262626;
+  --ag-row-border-color: #333;
+
+  /* Text colors */
+  --ag-foreground-color: rgba(255, 255, 255, 0.87);
+  --ag-header-foreground-color: rgba(255, 255, 255, 0.87);
+  --ag-secondary-foreground-color: rgba(255, 255, 255, 0.87);
+  --ag-disabled-foreground-color: rgba(255, 255, 255, 0.5);
+  --ag-data-color: rgba(255, 255, 255, 0.87);
+
+  /* Interactive elements */
+  --ag-input-focus-border-color: #535bf2;
+  --ag-range-selection-border-color: #535bf2;
+  --ag-input-focus-box-shadow: 0 0 0 1px #535bf2;
+  --ag-alpine-active-color: #535bf2;
+
+  /* Subtle hover effect instead of full white */
+  --ag-row-hover-color: rgba(100, 108, 255, 0.08);
+  --ag-selected-row-background-color: rgba(100, 108, 255, 0.2);
+}
+
+/* Additional row hover effect with transition */
+.ag-theme-material .ag-row {
+  transition: background-color 0.15s ease;
+}
+
+.ag-theme-material .ag-row:hover {
+  background-color: rgba(84, 91, 242, 0.12) !important;
+  /* Subtle hint of primary color */
+  border-left: 2px solid #535bf2;
+  /* Left border indicator */
+}
+
+/* Override specific pagination elements */
+.ag-theme-material .ag-paging-panel {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.ag-theme-material .ag-paging-button {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.ag-theme-material .ag-paging-description {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Ensure dark theme is used regardless of system preference */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: rgba(255, 255, 255, 0.87);
+    /* Force dark theme text */
+    background-color: #1e1e1e;
+    /* Force dark theme background */
+  }
+
+  body {
+    color: rgba(255, 255, 255, 0.87);
+    /* Force dark theme text */
+    background-color: #1e1e1e;
+    /* Force dark theme background */
   }
 
   a:hover {
@@ -67,6 +141,8 @@ button:focus-visible {
   }
 
   button {
-    background-color: #f9f9f9;
+    background-color: #1a1a1a;
+    /* Force dark theme button */
+    color: rgba(255, 255, 255, 0.87);
   }
 }
